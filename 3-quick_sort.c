@@ -1,34 +1,78 @@
 #include "sort.h"
 
 /**
-  * selection_sort - ...
+  * quick_sort - ...
   * @array: ...
   * @size: ...
   *
   * Return: Nothing!
   */
-void selection_sort(int *array, size_t size)
+void quick_sort(int *array, size_t size)
 {
-	size_t i, j, min_idx;
-	int temp;
-
-	if (size < 2)
+	if (!array || size < 2)
 		return;
 
-	for (i = 0; i < size - 1; i++)
+	quick_sort_rec(array, 0, size - 1, size);
+}
+
+/**
+  * quick_sort_rec - ...
+  * @array: ...
+  * @lower: ...
+  * @higher: ...
+  * @size: ...
+  *
+  * Return: Nothing!
+  */
+void quick_sort_rec(int *array, int lower, int higher, size_t size)
+{
+	int l_p = 0;
+
+	if (lower < higher)
 	{
-		min_idx = i;
-		for (j = i + 1; j < size; j++)
+		l_p = lomuto_partition(array, lower, higher, size);
+		quick_sort_rec(array, lower, l_p - 1, size);
+		quick_sort_rec(array, l_p + 1, higher, size);
+	}
+}
+
+/**
+  * lomuto_partition - ...
+  * @array: ...
+  * @lower: ...
+  * @higher: ...
+  * @size: ...
+  *
+  * Return: Nothing!
+  */
+int lomuto_partition(int *array, int lower, int higher, size_t size)
+{
+	int i = 0, j = 0, pivot = 0, aux = 0;
+
+	pivot = array[higher];
+	i = lower;
+
+	for (j = lower; j < higher; ++j)
+	{
+		if (array[j] < pivot)
 		{
-			if (array[j] < array[min_idx])
-				min_idx = j;
-		}
-		if (min_idx != i)
-		{
-			temp = array[i];
-			array[i] = array[min_idx];
-			array[min_idx] = temp;
-			print_array(array, size);
+			aux = array[i];
+			array[i] = array[j];
+			array[j] = aux;
+
+			if (aux != array[i])
+				print_array(array, size);
+
+			++i;
 		}
 	}
+
+	aux = array[i];
+	array[i] = array[higher];
+	array[higher] = aux;
+
+	if (aux != array[i])
+		print_array(array, size);
+
+	return (i);
 }
